@@ -1,0 +1,25 @@
+---
+
+- name: Install ntp
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ntp
+    - ntpdate
+
+- name: Remove localtime
+  file:
+    path: /etc/localtime
+    state: absent
+
+- name: Create localtime
+  file:
+    src: "/usr/share/zoneinfo/{{ region }}/{{ city }}"
+    path: /etc/localtime
+    state: link
+
+- name: Copy clock file
+  template:
+    src: clock.j2
+    dest: /etc/sysconfig/clock
